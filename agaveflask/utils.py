@@ -1,11 +1,13 @@
+import os
+
 import flask.ext.restful.reqparse as reqparse
 from flask import jsonify, request
 from werkzeug.exceptions import ClientDisconnected
 from flask_restful import Api
 
-from config import Config
+from .config import Config
 
-
+TAG = os.environ.get('service_TAG') or Config.get('general', 'TAG')
 
 class APIException(Exception):
 

@@ -10,10 +10,10 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-def read_config():
+def read_config(conf_file='service.conf'):
     parser = ConfigParser()
-    places = ['/abaco.conf',
-              '/etc/abaco.conf']
+    places = ['/{}'.format(conf_file),
+              '/etc/{}'.format(conf_file)]
     place = places[0]
     for p in places:
         if os.path.exists(p):
