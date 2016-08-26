@@ -30,7 +30,7 @@ requires = [pkg for pkg in open('requirements.txt').readlines()]
 
 setup(
     name='agaveflask',
-    version='0.1.0',
+    version='0.0.2',
     description='Common package for authoring Agave services in flask/Flask-RESTful',
     long_description=readme,
     author='Joe Stubbs',
@@ -40,7 +40,8 @@ setup(
         'agaveflask',
     ],
     package_dir={'agaveflask': 'agaveflask'},
-    data_files=[('', ['requirements.txt'])],
+    data_files=[('', ['requirements.txt'], ['README.md'])],
+    include_package_data=True,
     install_requires=requires,
     license="BSD",
     zip_safe=False,
