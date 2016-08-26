@@ -22,7 +22,7 @@ def get_pub_key():
     return RSA.importKey(base64.b64decode(pub_key))
 
 
-PUB_KEY = get_pub_key()
+
 
 TOKEN_RE = re.compile('Bearer (.+)')
 
@@ -93,6 +93,7 @@ def check_jwt(req):
                 msg = msg + ' ' + str(k) + ': ' + str(v)
              abort(400, {'message': 'JWT header missing. Headers: '+msg})
     try:
+        PUB_KEY = get_pub_key()
         decoded = jwt.decode(jwt_header, PUB_KEY)
         g.jwt = jwt_header
         g.tenant = tenant_name.upper()
