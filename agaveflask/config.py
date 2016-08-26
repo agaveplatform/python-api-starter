@@ -13,7 +13,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 def read_config(conf_file='service.conf'):
     parser = ConfigParser()
     places = ['/{}'.format(conf_file),
-              '/etc/{}'.format(conf_file)]
+              '/etc/{}'.format(conf_file),
+              '{}/{}'.format(os.getcwd(), conf_file)]
     place = places[0]
     for p in places:
         if os.path.exists(p):
