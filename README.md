@@ -2,7 +2,8 @@
 
 ## Overview ##
 
-A common set of Python modules for writing flask services for the Agave Platform. The package generally requires Python 3.4+ is officially supported. 
+A common set of Python modules for writing flask services for the Agave Platform. The package officially requires Python
+3.4+, though some functionality may work with Python 2.
 
 ## Installation ##
 pip install agaveflask
@@ -10,7 +11,8 @@ pip install agaveflask
 ## Usage ##
 agaveflask provides the following modules:
 
-* auth - configurable authentication/authorization routines.
-* config - config parsing.
-* store - python bindings for persistence.
-* utils - general request/response utilities.
+* auth.py - configurable authentication/authorization routines.
+* config.py - config parsing.
+* errors.py - exception classes raised by agaveflask.
+* store.py - python bindings for persistence.
+* utils.py - general request/response utilities.
