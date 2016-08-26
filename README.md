@@ -14,6 +14,7 @@ apt-get install python3-dev g++
 
 
 ## Usage ##
+
 agaveflask provides the following modules:
 
 * auth.py - configurable authentication/authorization routines.
@@ -21,3 +22,6 @@ agaveflask provides the following modules:
 * errors.py - exception classes raised by agaveflask.
 * store.py - python bindings for persistence.
 * utils.py - general request/response utilities.
+
+It relies on a configuration file for the service. Create a file called service.conf in one of `/`, `/etc`, or `$pwd`.
+See service.conf.ex in this repository for settings used by this library.
