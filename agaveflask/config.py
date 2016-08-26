@@ -20,6 +20,8 @@ def read_config(conf_file='service.conf'):
         if os.path.exists(p):
             place = p
             break
+    else:
+        raise RuntimeError('No config file found.')
     if not parser.read(place):
         raise RuntimeError("couldn't read config file from {0}"
                            .format(', '.join(place)))
