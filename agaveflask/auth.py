@@ -80,12 +80,14 @@ def check_jwt(req):
     for k, v in req.headers.items():
         if k.startswith('X-Jwt-Assertion-'):
             tenant_name = k.split('X-Jwt-Assertion-')[1]
+            jwt_header_name = k
             jwt_header = v
             break
     else:
         # never found a jwt; look for 'Assertion'
         try:
             jwt_header = req.headers['Assertion']
+            jwt_header_name = 'Assertion'
             tenant_name = 'dev_staging'
         except KeyError:
              msg = ''
@@ -95,7 +97,9 @@ def check_jwt(req):
     try:
         PUB_KEY = get_pub_key()
         decoded = jwt.decode(jwt_header, PUB_KEY)
+        g.jwt_header_name = jwt_header_name
         g.jwt = jwt_header
+        g.jwt_decoded = decoded
         g.tenant = tenant_name.upper()
         g.api_server = get_api_server(tenant_name)
         g.user = decoded['http://wso2.org/claims/enduser'].split('@')[0]
