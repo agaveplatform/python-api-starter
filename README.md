@@ -107,17 +107,14 @@ other value starts up gunicorn. Default is 'dev'.
 * port: port to start the server on when running with gunicorn. Default is 5000.
 
 
-### Docker compose Examples ###
+### Docker compose Example ###
 The following snippet from a hypothetical docker-compose.yml file illustrates typical usage. In this example we have a
-folder, `services`, containing two services that we are bundling into the same docker image (`jdoe/my_services`).
+folder, `services`, containing two services like so:
 
-* `/services`
-* `         /serviceA`
-* `                  api.py`
-* `         /serviceB`
-* `                  api.py`
+* `/services/serviceA/api.py`
+* `/services/serviceB/api.py`
 
-Because of this we need to set the indvidual packages for each using environmental variables. We also set the server
+We are bundling into the same docker image (`jdoe/my_services`). Because of this we need to set the indvidual packages for each using environmental variables. We also set the server
 variable so that we use gunicorn.
 
 ```
