@@ -10,10 +10,12 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-class AgaveConfigParser(ConfigParser):
+class AgaveConfigParser():
+    def __init__(self):
+        self.parser = ConfigParser()
     def get(self, section, option, default_value=None):
         try:
-            return ConfigParser.get(self, section, option)
+            return self.parser.get(section, option)
         except (NoOptionError, NoSectionError):
             return default_value
 
@@ -30,7 +32,7 @@ def read_config(conf_file='service.conf'):
             break
     else:
         raise RuntimeError('No config file found.')
-    if not parser.read(place):
+    if not parser.parser.read(place):
         raise RuntimeError("couldn't read config file from {0}"
                            .format(', '.join(place)))
     return parser
