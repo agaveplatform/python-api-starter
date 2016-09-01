@@ -5,16 +5,16 @@
 
 """
 
-from configparser import ConfigParser, NoOptionError
+from configparser import ConfigParser, NoOptionError, NoSectionError
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 class AgaveConfigParser(ConfigParser):
-    def get(self, section, option, raw=False, vars=None, default_value=None):
+    def get(self, section, option, default_value=None):
         try:
-            return ConfigParser.get(self, section, option, raw, vars)
-        except NoOptionError:
+            return ConfigParser.get(self, section, option)
+        except (NoOptionError, NoSectionError):
             return default_value
 
 
