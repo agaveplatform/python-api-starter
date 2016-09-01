@@ -1,10 +1,11 @@
 """Read config files from:
-- /abaco.conf (added by user)
-- /etc/abaco.conf (an example is placed here by the Dockerfile)
+- /service.conf (added by user)
+- /etc/service.conf
+- CWD/service.conf
 
 """
 
-from configparser import ConfigParser
+from configparser import ConfigParser, NoOptionError
 import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -13,7 +14,7 @@ class AgaveConfigParser(ConfigParser):
     def get(self, section, option, raw=False, vars=None, default_value=None):
         try:
             return ConfigParser.get(self, section, option, raw, vars)
-        except ConfigParser.NoOptionError:
+        except NoOptionError:
             return default_value
 
 
