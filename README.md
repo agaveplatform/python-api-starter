@@ -111,11 +111,11 @@ other value starts up gunicorn. Default is 'dev'.
 The following snippet from a hypothetical docker-compose.yml file illustrates typical usage. In this example we have a
 folder, `services`, containing two services that we are bundling into the same docker image (`jdoe/my_services`).
 
-* /services
-*          /serviceA
-*                   api.py
-*          /serviceB
-*                   api.py
+* `/services`
+* `         /serviceA`
+* `                  api.py`
+* `         /serviceB`
+* `                  api.py`
 
 Because of this we need to set the indvidual packages for each using environmental variables. We also set the server
 variable so that we use gunicorn.
