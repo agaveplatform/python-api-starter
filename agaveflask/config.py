@@ -9,10 +9,10 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-class AgaveConfigParser(ConfigParser.ConfigParser):
+class AgaveConfigParser(ConfigParser):
     def get(self, section, option, raw=False, vars=None, default_value=None):
         try:
-            return ConfigParser.ConfigParser.get(self, section, option, raw, vars)
+            return ConfigParser.get(self, section, option, raw, vars)
         except ConfigParser.NoOptionError:
             return default_value
 
