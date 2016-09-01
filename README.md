@@ -46,14 +46,16 @@ ADD service /service
 ### Suggested Package Layout ###
 
 For simple microservices, we make the following recommendations for minimal configuration at deployment time.
+
 * Place the service code in a Python package called `services` that resides at the root of the DOcker image (i.e. `/service`).
 * Within `/service`, have a python module called `api.py` where the wsgi application is instantiated.
 * Call the actual wsgi application object `app`.
 
-Additional suggestions for the `api.py` module include:
+Beyond standard flask operations, additional suggestions for the `api.py` module include:
+
 * Add cors support.
+* Set up authentication and authorization for your API using the agaveflask authn_and_authz() method.
 * Start a development server within `__main__`.
-*
 
 We also recommend
 
