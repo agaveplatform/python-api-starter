@@ -9,9 +9,16 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+class AgaveConfigParser(ConfigParser.ConfigParser):
+    def get(self, section, option, raw=False, vars=None, default_value=None):
+        try:
+            return ConfigParser.ConfigParser.get(self, section, option, raw, vars)
+        except ConfigParser.NoOptionError:
+            return default_value
+
 
 def read_config(conf_file='service.conf'):
-    parser = ConfigParser()
+    parser = AgaveConfigParser()
     places = ['/{}'.format(conf_file),
               '/etc/{}'.format(conf_file),
               '{}/{}'.format(os.getcwd(), conf_file)]
