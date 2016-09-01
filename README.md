@@ -47,7 +47,7 @@ ADD service /service
 
 For simple microservices, we make the following recommendations for minimal configuration at deployment time.
 
-* Place the service code in a Python package called `services` that resides at the root of the DOcker image (i.e. `/service`).
+* Place the service code in a Python package called `service` that resides at the root of the Docker image (i.e. `/service`).
 * Within `/service`, have a python module called `api.py` where the wsgi application is instantiated.
 * Call the actual wsgi application object `app`.
 
@@ -99,7 +99,7 @@ rely exclusively on the image defaults.
 
 Here is a complete list of config variables, their usage, and their default values:
 
-* server: Value "dev" attempts to starts up a development server by executing your module's `__main__` method. Any
+* server: Value 'dev' attempts to starts up a development server by executing your module's `__main__` method. Any
 other value starts up gunicorn. Default is 'dev'.
 * package: path to package containing service code (no trailing slash). Default is '/service'.
 * module: name of python module (not including '.py') containing the wsgi application object. Default is 'api'.
@@ -110,6 +110,13 @@ other value starts up gunicorn. Default is 'dev'.
 ### Docker compose Examples ###
 The following snippet from a hypothetical docker-compose.yml file illustrates typical usage. In this example we have a
 folder, `services`, containing two services that we are bundling into the same docker image (`jdoe/my_services`).
+
+* /services
+*          /serviceA
+*                   api.py
+*          /serviceB
+*                   api.py
+
 Because of this we need to set the indvidual packages for each using environmental variables. We also set the server
 variable so that we use gunicorn.
 
