@@ -57,8 +57,6 @@ Beyond standard flask operations, additional suggestions for the `api.py` module
 * Set up authentication and authorization for your API using the agaveflask authn_and_authz() method.
 * Start a development server within `__main__`.
 
-We also recommend
-
 Here is a typical example:
 
 ```
