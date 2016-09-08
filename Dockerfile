@@ -3,14 +3,19 @@
 # Usage: decend from this image, add your requirements file and service source code. The requirements file should
 #        include agaveflask, specifying a particular version if necessary.
 
-from python:alpine
-RUN apk add --update git
-RUN apk add --update bash && rm -f /var/cache/apk/*
-RUN apk add --update --virtual=.build-dependencies alpine-sdk ca-certificates musl-dev gcc python-dev make cmake g++
+#from python:alpine
+#RUN apk add --update git
+#RUN apk add --update bash && rm -f /var/cache/apk/*
+#RUN apk add --update --virtual=.build-dependencies alpine-sdk ca-certificates musl-dev gcc python-dev make cmake g++
+
+from ubuntu:14.04
+RUN apt-get update
+RUN apt-get install -y python-dev
+RUN apt-get install -y libxml2-dev libxslt1-dev python3-pip git
 
 RUN mkdir /_flask_api
 ADD requirements.txt /_flask_api/requirements.txt
-RUN pip install -r /_flask_api/requirements.txt
+RUN pip3 install -r /_flask_api/requirements.txt
 
 ADD entry.sh /_flask_api/entry.sh
 RUN chmod +x /_flask_api/entry.sh
