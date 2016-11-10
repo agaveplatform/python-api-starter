@@ -36,7 +36,7 @@ class AgaveApi(Api):
         if AgaveApi.show_traceback == 'true':
             raise exc
         if isinstance(exc, APIException):
-            return self.make_response(data=error(msg=exc.message), code=exc.code)
+            return self.make_response(data=error(msg=exc.msg), code=exc.code)
         else:
             return self.make_response(data=error(), code=500)
 
