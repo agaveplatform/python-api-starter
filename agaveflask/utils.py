@@ -6,6 +6,7 @@ from werkzeug.exceptions import ClientDisconnected
 from flask_restful import Api
 
 from .config import Config
+from .errors import BaseAgaveflaskError
 
 TAG = os.environ.get('service_TAG') or Config.get('general', 'TAG')
 
@@ -35,7 +36,7 @@ class AgaveApi(Api):
     def handle_error(self, exc):
         if AgaveApi.show_traceback == 'true':
             raise exc
-        if isinstance(exc, APIException):
+        if isinstance(exc, APIException) or isinstance(exc, BaseAgaveflaskError):
             return self.make_response(data=error(msg=exc.msg), code=exc.code)
         else:
             return self.make_response(data=error(), code=500)
