@@ -5,11 +5,12 @@ import re
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.PublicKey import RSA
 from Crypto.Hash import SHA256
-from flask import g, request, abort
+from flask import g, request
 import jwt
 
 from .config import Config
-from .utils import APIException, ok, RequestParser
+from .errors import PermissionsError
+from .utils import ok, RequestParser
 
 
 jwt.verify_methods['SHA256WITHRSA'] = (
@@ -71,7 +72,7 @@ def authentication():
         return
     if access_control_type == 'jwt':
         return check_jwt(request)
-    abort(400, {'message': 'Invalid access_control'})
+    raise PermissionsError(msg='Invalid access_control')
 
 
 def check_jwt(req):
@@ -90,10 +91,10 @@ def check_jwt(req):
             jwt_header_name = 'Assertion'
             tenant_name = 'dev_staging'
         except KeyError:
-             msg = ''
-             for k,v in req.headers.items():
-                msg = msg + ' ' + str(k) + ': ' + str(v)
-             abort(400, {'message': 'JWT header missing. Headers: '+msg})
+            # msg = ''
+            # for k,v in req.headers.items():
+            #    msg = msg + ' ' + str(k) + ': ' + str(v)
+            raise PermissionsError(msg='JWT header missing.')
     try:
         PUB_KEY = get_pub_key()
         decoded = jwt.decode(jwt_header, PUB_KEY)
@@ -105,7 +106,7 @@ def check_jwt(req):
         g.user = decoded['http://wso2.org/claims/enduser'].split('@')[0]
         g.token = get_token(req.headers)
     except (jwt.DecodeError, KeyError):
-        abort(400, {'message': 'Invalid JWT.'})
+        raise PermissionsError(msg='Invalid JWT.')
 
 def get_api_server(tenant_name):
     # todo - lookup tenant in tenants table
@@ -171,7 +172,7 @@ def authorization():
         else:
             has_pem = check_permissions(user=g.user, actor_id=actor_id, level='UPDATE')
     if not has_pem:
-        raise APIException("Not authorized")
+        raise PermissionsError("Not authorized")
 
 def check_permissions(user, *args):
     """Check the permissions store for user and level"""

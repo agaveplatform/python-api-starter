@@ -10,14 +10,6 @@ from .errors import BaseAgaveflaskError
 
 TAG = os.environ.get('service_TAG') or Config.get('general', 'TAG')
 
-class APIException(Exception):
-
-    def __init__(self, message, code=400):
-        Exception.__init__(self, message)
-        self.message = message
-        self.code = code
-        self.status = 'error'
-        self.version = TAG
 
 class RequestParser(reqparse.RequestParser):
     """Wrap reqparse to raise APIException."""
@@ -26,20 +18,28 @@ class RequestParser(reqparse.RequestParser):
         try:
             return super(RequestParser, self).parse_args(*args, **kwargs)
         except ClientDisconnected as exc:
-            raise APIException(exc.data['message'], 400)
+            raise BaseAgaveflaskError(exc.data['message'], 400)
 
 class AgaveApi(Api):
     """General flask_restful Api subclass for all the Agave APIs."""
+    pass
 
+
+def handle_error(exc):
     show_traceback = Config.get('web', 'show_traceback')
+    if show_traceback == 'true':
+        raise exc
+    if isinstance(exc, BaseAgaveflaskError):
+        response = error(msg=exc.msg)
+        response.status_code = exc.code
+        return response
+        # return self.make_response(data=error(msg=exc.msg), code=exc.code)
+    else:
+        response = error(msg='Unrecognized exception type: {}. Exception: {}'.format(type(exc), exc))
+        response.status_code = 500
+        return response
+        # return self.make_response(data=error(msg='Unrecognized exception type: {}. Exception: {}'.format(type(exc), exc)), code=500)
 
-    def handle_error(self, exc):
-        if AgaveApi.show_traceback == 'true':
-            raise exc
-        if isinstance(exc, APIException) or isinstance(exc, BaseAgaveflaskError):
-            return self.make_response(data=error(msg=exc.msg), code=exc.code)
-        else:
-            return self.make_response(data=error(), code=500)
 
 def pretty_print(request):
     """Return whether or not to pretty print based on request"""
@@ -52,17 +52,19 @@ def ok(result, msg="The request was successful", request=request):
          'status': 'success',
          'version': TAG,
          'message': msg}
-    if pretty_print(request):
-        return jsonify(d)
-    else:
-        return d
+    return jsonify(d)
+    # if pretty_print(request):
+    #     return jsonify(d)
+    # else:
+    #     return d
 
 def error(result=None, msg="Error processing the request.", request=request):
     d = {'result': result,
          'status': 'error',
          'version': TAG,
          'message': msg}
-    if pretty_print(request):
-        return jsonify(d)
-    else:
-        return d
+    return jsonify(d)
+    # if pretty_print(request):
+    #     return jsonify(d)
+    # else:
+    #     return d
