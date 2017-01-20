@@ -63,7 +63,7 @@ Here is a typical example:
 from flask import Flask
 from flask_cors import CORS
 
-from agaveflask.utils import AgaveApi
+from agaveflask.utils import AgaveApi, handle_error
 from agaveflask.auth import authn_and_authz
 
 from resources import JwtResource
@@ -81,6 +81,11 @@ api = AgaveApi(app)
 @app.before_request
 def auth():
     authn_and_authz()
+
+# Set up error handling
+@app.errorhandler(Exception)
+def handle_all_errors(e):
+    return handle_error(e)
 
 # Add the resources
 api.add_resource(JwtResource, '/admin/jwt')
