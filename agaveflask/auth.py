@@ -10,7 +10,6 @@ import jwt
 
 from .config import Config
 from .errors import PermissionsError
-from .utils import ok, RequestParser
 
 
 jwt.verify_methods['SHA256WITHRSA'] = (
@@ -21,8 +20,6 @@ jwt.prepare_key_methods['SHA256WITHRSA'] = jwt.prepare_RS_key
 def get_pub_key():
     pub_key = Config.get('web', 'apim_public_key')
     return RSA.importKey(base64.b64decode(pub_key))
-
-
 
 
 TOKEN_RE = re.compile('Bearer (.+)')
@@ -91,9 +88,6 @@ def check_jwt(req):
             jwt_header_name = 'Assertion'
             tenant_name = 'dev_staging'
         except KeyError:
-            # msg = ''
-            # for k,v in req.headers.items():
-            #    msg = msg + ' ' + str(k) + ': ' + str(v)
             raise PermissionsError(msg='JWT header missing.')
     try:
         PUB_KEY = get_pub_key()

@@ -33,13 +33,10 @@ def handle_error(exc):
         response = error(msg=exc.msg)
         response.status_code = exc.code
         return response
-        # return self.make_response(data=error(msg=exc.msg), code=exc.code)
     else:
         response = error(msg='Unrecognized exception type: {}. Exception: {}'.format(type(exc), exc))
         response.status_code = 500
         return response
-        # return self.make_response(data=error(msg='Unrecognized exception type: {}. Exception: {}'.format(type(exc), exc)), code=500)
-
 
 def pretty_print(request):
     """Return whether or not to pretty print based on request"""
@@ -53,10 +50,6 @@ def ok(result, msg="The request was successful", request=request):
          'version': TAG,
          'message': msg}
     return jsonify(d)
-    # if pretty_print(request):
-    #     return jsonify(d)
-    # else:
-    #     return d
 
 def error(result=None, msg="Error processing the request.", request=request):
     d = {'result': result,
@@ -64,7 +57,3 @@ def error(result=None, msg="Error processing the request.", request=request):
          'version': TAG,
          'message': msg}
     return jsonify(d)
-    # if pretty_print(request):
-    #     return jsonify(d)
-    # else:
-    #     return d
