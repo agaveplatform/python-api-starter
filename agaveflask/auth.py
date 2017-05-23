@@ -11,6 +11,9 @@ import jwt
 from .config import Config
 from .errors import PermissionsError
 
+from logs import get_logger
+logger = get_logger(__name__)
+
 
 jwt.verify_methods['SHA256WITHRSA'] = (
     lambda msg, key, sig: PKCS1_v1_5.new(key).verify(SHA256.new(msg), sig))
@@ -30,9 +33,12 @@ def get_pub_key():
     return RSA.importKey(base64.b64decode(pub_key))
 
 
-def authn_and_authz():
-    """All-in-one convenience function for implementing the basic abaco authentication
-    and authorization on a flask app. Use as follows:
+def authn_and_authz(authz_callback=None):
+    """All-in-one convenience function for implementing the basic Agave authentication
+    and authorization on a flask app. Pass authz_callback, a Python callable, to do additional custom authorization
+    checks within your app after the initial checks.
+
+    Basic usage is as follows:
 
     import auth
 
@@ -43,7 +49,7 @@ def authn_and_authz():
 
     """
     authentication()
-    authorization()
+    authorization(authz_callback)
 
 
 def authentication():
@@ -66,6 +72,8 @@ def authentication():
         g.token = 'N/A'
         g.tenant = request.headers.get('tenant') or Config.get('web', 'tenant_name')
         g.api_server = get_api_server(g.tenant)
+        # with access_control_type NONE, we grant all permissions:
+        g.roles = ['ALL']
         return
     if access_control_type == 'jwt':
         return check_jwt(request)
@@ -97,10 +105,23 @@ def check_jwt(req):
         g.jwt_decoded = decoded
         g.tenant = tenant_name.upper()
         g.api_server = get_api_server(tenant_name)
+        g.jwt_server = get_jwt_server()
         g.user = decoded['http://wso2.org/claims/enduser'].split('@')[0]
         g.token = get_token(req.headers)
     except (jwt.DecodeError, KeyError):
+        logger.warn("Invalid JWT")
         raise PermissionsError(msg='Invalid JWT.')
+    try:
+        g.roles_str = decoded['http://wso2.org/claims/role']
+    except KeyError:
+        # without a roles string, we won't throw an error but will assume the user has no roles.
+        logger.warn("Could not decode the roles_str from the JWT.")
+        g.roles = []
+        return
+    # WSO2 APIM roles are returned as a single string, delineated by comma (',') characters.
+    g.roles = g.roles_str.split(',')
+
+
 
 def get_api_server(tenant_name):
     # todo - lookup tenant in tenants table
@@ -120,7 +141,10 @@ def get_api_server(tenant_name):
         return 'https://api.tacc.utexas.edu'
     if tenant_name.upper() == 'VDJSERVER-ORG':
         return 'https://vdj-agave-api.tacc.utexas.edu'
-    return 'http://localhost:8000'
+    return 'http://172.17.0.1:8000'
+
+def get_jwt_server():
+    return 'http://api.prod.agaveapi.co'
 
 def get_token(headers):
     """
@@ -134,7 +158,7 @@ def get_token(headers):
     else:
         return match.group(1)
 
-def authorization():
+def authorization(authz_callback=None):
     """Entry point for authorization. Use as follows:
 
     import auth
@@ -149,25 +173,5 @@ def authorization():
         # allow all users to make OPTIONS requests
         return
 
-    # all other checks are based on actor-id; if that is not present then let
-    # request through to fail.
-    actor_id = request.args.get('actor_id', None)
-    if not actor_id:
-        return
-
-    if request.method == 'GET':
-        has_pem = check_permissions(user=g.user, actor_id=actor_id, level='READ')
-    else:
-        # creating a new actor requires no permissions
-        print(request.url_rule.rule)
-        if request.method == 'POST' \
-                and ('actors' == request.url_rule.rule or 'actors/' == request.url_rule.rule):
-            has_pem = True
-        else:
-            has_pem = check_permissions(user=g.user, actor_id=actor_id, level='UPDATE')
-    if not has_pem:
-        raise PermissionsError("Not authorized")
-
-def check_permissions(user, *args):
-    """Check the permissions store for user and level"""
-    return True
+    if authz_callback:
+        authz_callback()
