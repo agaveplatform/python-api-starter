@@ -3,7 +3,7 @@
 import logging
 import configparser
 
-from config import Config
+from .config import Config
 
 # possible log levels
 LEVELS = ('CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG',)
@@ -40,7 +40,7 @@ def get_log_file_strategy():
 def get_module_log_level(name):
     """Reads config file for a log level set for this module."""
     try:
-        log_level = Config.get('logs', 'level.{}'.format(name))
+        log_level = Config.get(section='logs', option='level.{}'.format(name), default_value=LEVEL)
     except configparser.NoSectionError:
         # if the logs section doesn't exist, use default
         return LEVEL
@@ -65,17 +65,22 @@ def get_log_file(name):
     mounted to the container, it it likely that this configuration is not needed.
     """
     try:
-        log_file = Config.get('logs', 'file.{}'.format(name))
+        log_file = Config.get(section='logs', option='file.{}'.format(name))
+
+        if (log_file is None):
+            return LOG_FILE
+        else:
+            return log_file
     except configparser.NoSectionError:
         # if the logs section doesn't exist, return the default
         return LOG_FILE
     except configparser.NoOptionError:
         # if the module doesn't have a specific file, check for a global config:
         try:
-            log_file = Config.get('logs', 'file')
+            log_file = Config.get(section='logs', option='file', default_value=LOG_FILE)
         except configparser.NoOptionError:
             return LOG_FILE
-    return log_file
+    return log_file if log_file is not None else LOG_FILE
 
 
 def get_logger(name):

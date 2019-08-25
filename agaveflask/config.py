@@ -13,11 +13,18 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 class AgaveConfigParser():
     def __init__(self):
         self.parser = ConfigParser()
+
     def get(self, section, option, default_value=None):
         try:
             return self.parser.get(section, option)
         except (NoOptionError, NoSectionError):
             return default_value
+
+    def set(self, section, option, default_value=None):
+        try:
+            self.parser.set(section, option, default_value)
+        except (NoOptionError, NoSectionError):
+           raise
 
 
 def read_config(conf_file='service.conf'):

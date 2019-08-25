@@ -8,13 +8,18 @@
 #RUN apk add --update bash && rm -f /var/cache/apk/*
 #RUN apk add --update --virtual=.build-dependencies alpine-sdk ca-certificates musl-dev gcc python-dev make cmake g++
 
-FROM ubuntu:14.04
-RUN apt-get update
-RUN apt-get install -y python-dev
-RUN apt-get install -y libxml2-dev libxslt1-dev python3-pip git
+FROM ubuntu:18.04
+RUN apt-get update && \
+		apt-get install -y python-dev \
+											 libxml2-dev \
+											 libxslt1-dev \
+											 python3-pip \
+											 git \
+											 ca-certificates && \
+		mkdir /_flask_api
 
-RUN mkdir /_flask_api
 ADD requirements.txt /_flask_api/requirements.txt
+
 RUN pip3 install -r /_flask_api/requirements.txt
 
 ADD entry.sh /_flask_api/entry.sh
