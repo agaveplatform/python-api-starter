@@ -33,9 +33,10 @@ setup(
     version='0.2.0',
     description='Common package for authoring Agave services in flask/Flask-RESTful',
     long_description=readme,
-    author='Joe Stubbs',
-    author_email='jstubbs@tacc.utexas.edu',
-    url='https://bitbucket.org/agaveapi/agaveflask',
+
+    author='Rion Dooley, Joe Stubbs',
+    author_email='deardooley@gmail.com',
+    url='https://github.com/agaveplatform/python-api-starter',
     packages=[
         'agaveflask',
     ],
@@ -53,6 +54,7 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.7',
     ],
     cmdclass={'test': PyTest},
     tests_require=['pytest'],

@@ -15,7 +15,7 @@ apt-get install python3-dev g++
 
 ## Usage ##
 
-agaveflask provides the following modules:
+`agaveflask` provides the following modules:
 
 * auth.py - configurable authentication/authorization routines.
 * config.py - config parsing.
@@ -24,7 +24,7 @@ agaveflask provides the following modules:
 * utils.py - general request/response utilities.
 
 It relies on a configuration file for the service. Create a file called service.conf in one of `/`, `/etc`, or `$pwd`.
-See service.conf.ex in this repository for settings used by this library.
+See `service.conf.example` in this repository for settings used by this library.
 
 
 ## Using Docker ##
@@ -37,7 +37,7 @@ flask service with a requirements.txt file and code that resides in a directory 
 be as simple as:
 
 ```
-from agaveapi/flask_api
+FROM agaveplatform/python-api-base
 ADD requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 ADD service /service
@@ -113,7 +113,7 @@ other value starts up gunicorn. Default is 'dev'.
 
 
 ### Docker compose Example ###
-The following snippet from a hypothetical docker-compose.yml file illustrates typical usage. In this example we have a
+The following snippet from a hypothetical `docker-compose.yml` file illustrates typical usage. In this example we have a
 folder, `services`, containing two services like so:
 
 * `/services/serviceA/api.py`

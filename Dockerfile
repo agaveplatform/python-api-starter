@@ -8,7 +8,7 @@
 #RUN apk add --update bash && rm -f /var/cache/apk/*
 #RUN apk add --update --virtual=.build-dependencies alpine-sdk ca-certificates musl-dev gcc python-dev make cmake g++
 
-from ubuntu:14.04
+FROM ubuntu:14.04
 RUN apt-get update
 RUN apt-get install -y python-dev
 RUN apt-get install -y libxml2-dev libxslt1-dev python3-pip git

@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 0.3.0 - 2019-09-25
+### Added
+- No change.
+
+### Changed
+- Updated Python 3.7 support.
+- Updated license to reflect new project institution.
+- Updated pyzmq dependency to allow >=14.3
+
+### Removed
+- No change.
+
 
 ## 0.2.0 - 2016-08-26
 ### Added
