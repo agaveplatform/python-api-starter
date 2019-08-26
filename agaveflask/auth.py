@@ -1,26 +1,28 @@
 # Utilities for authn/z
 import base64
 import re
-
-# from Crypto.Signature import PKCS1_v1_5
-# from Crypto.PublicKey import RSA
-#from Crypto.Hash import SHA256
-from flask import g, request
-import jwt
 import requests
+import jwt
+
+from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
+from flask import g, request
 
 from .config import Config
 from .errors import PermissionsError,BaseAgaveflaskError
-
 from .logs import get_logger
+
 logger = get_logger(__name__)
 
-# jwt.verify_methods['SHA256WITHRSA'] = (
-#     lambda msg, key, sig: PKCS1_v1_5.new(key).verify(SHA256.new(msg), sig))
-# jwt.prepare_key_methods['SHA256WITHRSA'] = jwt.prepare_RS_key
+jwt.unregister_algorithm('RS256')
+jwt.register_algorithm('RS256', RSAAlgorithm(RSAAlgorithm.SHA256))
 
 def _get_pub_key_url():
-    """Look for the jwt key in the config file, in a named file, and at a named url."""
+    """Read JWT public key from a url specified  in the `apim_public_key_url` config variable. The public key
+    fetched from the URL is expected to be base64 encoded.
+
+    :rtype: str|None
+    """
+
 
     # check for a file path in the service settings
     pub_key_url = Config.get('web', 'apim_public_key_url')
@@ -35,37 +37,42 @@ def _get_pub_key_url():
 
             if pub_key_response.status_code == 200:
 
-                pub_key = pub_key_response.text
+                pub_key = pub_key_response.content
 
-                return pub_key.strip(chars=" ")
+                return base64.b64decode(pub_key)
 
             else:
                 raise BaseAgaveflaskError(
-                    msg="Error fetching JWT public key from \"{}\". {}".format(pub_key_url, pub_key_response.content),
+                    msg="Error fetching JWT public key from \"{}\".".format(pub_key_url),
                     code=pub_key_response.status_code)
+
+        except BaseAgaveflaskError:
+            raise
 
         except Exception:
 
-            raise BaseAgaveflaskError(msg="Unable to fetch JWT public key from \"{}\".".format(pub_key_url))
+            raise BaseAgaveflaskError(msg="Unable to fetch JWT public key from \"{}\".".format(pub_key_url), code=500)
 
     else:
         return None
 
 
-
 def _get_pub_key_file():
-    """Read JWT public key from disk"""
+    """Read JWT public key from disk as a bas64 encoded value in the `apim_public_key_file` config variable.
+
+    :rtype: str|None
+    """
 
     pub_key_file_path = Config.get('web', 'apim_public_key_file')
 
     if pub_key_file_path is not None and pub_key_file_path != "":
 
-        f = open(pub_key_file_path, "r")
-
-        if f.mode == 'r':
-            logger.info("Reading JWT public key from disk at \"{}\".".format(pub_key_file_path))
-            pub_key = f.read()
-        else:
+        try:
+            with open(pub_key_file_path, "rb") as f:
+                logger.info("Reading JWT public key from disk at \"{}\".".format(pub_key_file_path))
+                pub_key = f.read()
+            f.close()
+        except OSError as err:
             raise BaseAgaveflaskError(
                 msg="Unable to read JWT public key file from disk at \"{}\".".format(pub_key_file_path),
                 code=500)
@@ -73,10 +80,14 @@ def _get_pub_key_file():
     else:
         return None
 
-    return pub_key.strip(chars=" ")
+    return base64.b64decode(pub_key)
+
 
 def _get_pub_key_serialized_value():
-    """Look for the JWT public key as a serialized value in the service config file."""
+    """Look for the JWT public key as a serialized bas64 encoded value in the `apim_public_key` config variable.
+
+    :rtype: str|None
+    """
 
     pub_key = Config.get('web', 'apim_public_key')
 
@@ -89,8 +100,13 @@ def _get_pub_key_serialized_value():
     else:
         return None
 
+
 def get_pub_key():
-    """Look for the jwt key in the config file, in a named file, and at a named url."""
+    """Look for the jwt key in the config file, in a named file, and at a named url
+    in that order. If no public key is found, a value
+
+    :rtype: str|None
+    """
 
     pub_key = _get_pub_key_serialized_value()
 
@@ -105,7 +121,7 @@ def get_pub_key():
     elif pub_key == '':
         raise BaseAgaveflaskError(msg="JWT public key was empty.", code=500)
     else:
-        return RSA.importKey(pub_key)
+        return pub_key
 
 
 TOKEN_RE = re.compile('Bearer (.+)')
@@ -177,7 +193,7 @@ def check_jwt(req):
             raise PermissionsError(msg='JWT header missing.')
     try:
         PUB_KEY = get_pub_key()
-        decoded = jwt.decode(jwt_header, PUB_KEY)
+        decoded = jwt.decode(jwt_header, PUB_KEY, algorithms='RS256')
         g.jwt_header_name = jwt_header_name
         g.jwt = jwt_header
         g.jwt_decoded = decoded
@@ -200,7 +216,6 @@ def check_jwt(req):
     g.roles = g.roles_str.split(',')
 
 
-
 def get_api_server(tenant_name):
     # todo - lookup tenant in tenants table
     if tenant_name.upper() == 'SANDBOX':
@@ -209,8 +224,10 @@ def get_api_server(tenant_name):
         return 'https://minikube'
     return 'http://172.17.0.1:8000'
 
+
 def get_jwt_server():
     return 'http://sandbox.agaveplatform.org'
+
 
 def get_token(headers):
     """
@@ -223,6 +240,7 @@ def get_token(headers):
         return None
     else:
         return match.group(1)
+
 
 def authorization(authz_callback=None):
     """Entry point for authorization. Use as follows:

@@ -14,6 +14,12 @@ tenant_name: dev_staging
 # public key for the apim instance when deployed behind apim (jwt access control)
 apim_pub_key: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCUp/oV1vWc8/TkQSiAvTousMzOM4asB2iltr2QKozni5aVFu818MpOLZIr8LMnTzWllJvvaA5RAAdpbECb+48FjbBe0hseUdN5HpwvnH/DW8ZccGvk53I6Orq7hLCv1ZHtuOCokghz/ATrhyPq+QktMfXnRS4HrKGJTzxaCcU7OQIDAQAB
 
+# file to the public key for the apim instance when deployed behind apim (jwt access control)
+apim_pub_key_file:
+
+# url to the public key for the apim instance when deployed behind apim (jwt access control)
+apim_pub_key_url:
+
 # whether to show tracebacks on error
 show_traceback: True
 
