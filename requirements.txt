@@ -1,10 +1,10 @@
-Flask==1.1.1
-Flask-RESTful==0.3.7
+flask==1.1.1
+flask-restful==0.3.7
 Flask-Cors==3.0.8
 redis==3.3.8
 pika==1.1.0
 cryptography==2.7
-PyJWT==1.7.1
+pyjwt==1.7.1
 gunicorn==19.9.0
 rabbitpy==2.0.1
 pyzmq==18.1.0
