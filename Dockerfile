@@ -1,12 +1,8 @@
-# Image: agaveapi/flask_api
-# Base image for Agev APIs based on flask/Flask-restful.
-# Usage: decend from this image, add your requirements file and service source code. The requirements file should
-#        include agaveflask, specifying a particular version if necessary.
-
-#from python:alpine
-#RUN apk add --update git
-#RUN apk add --update bash && rm -f /var/cache/apk/*
-#RUN apk add --update --virtual=.build-dependencies alpine-sdk ca-certificates musl-dev gcc python-dev make cmake g++
+# Image: agaveplatform/python-api-starter
+# Base image for Agave Platform APIs based on flask/Flask-RESTful.
+# Usage: Build from this image, add your requirements file and service source code. The requirements file should
+#        include git+https://github.com/agaveplatform/python-api-starter.git#egg=agaveflask,
+#				 specifying a particular branch/version if necessary.
 
 FROM ubuntu:18.04
 RUN apt-get update && \

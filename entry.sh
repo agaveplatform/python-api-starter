@@ -11,5 +11,6 @@
 if [ $server = "dev" ]; then
     python3 -u "$package/$module".py
 else
-    cd $package; /usr/bin/gunicorn -w 2 -b :$port $module:$app
+    cd $package
+    /usr/bin/gunicorn -w 2 -b :$port $module:$app
 fi
