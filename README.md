@@ -1,17 +1,22 @@
-# agaveflask #
+# Agave Python API Starter (agaveflask) #
 
 ## Overview ##
 
-A common set of Python modules for writing flask services for the Agave Platform. The package officially requires Python
-3.4+, though some functionality may work with Python 2.
+A common set of Python modules for writing Flask>=1.0 services for the Agave Platform. The package officially requires Python
+3.6+.
 
 
 ## Installation ##
+
+```
 pip install agaveflask
+```
 
 Requires Python header files and a C++ compiler on top of gcc. On Debian/Ubuntu systems:
-apt-get install python3-dev g++
 
+```
+apt-get install python3-dev g++ 
+```  
 
 ## Usage ##
 
@@ -37,7 +42,7 @@ flask service with a requirements.txt file and code that resides in a directory 
 be as simple as:
 
 ```
-FROM agaveplatform/python-api-base
+FROM agaveplatform/python-api-base:latest
 ADD requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 ADD service /service
