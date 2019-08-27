@@ -21,9 +21,9 @@ class PyTest(TestCommand):
         sys.exit(errcode)
 
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
+# if sys.argv[-1] == 'publish':
+#     os.system('python setup.py sdist upload')
+#     sys.exit()
 
 readme = open('README.md').read()
 requires = [pkg for pkg in open('requirements.txt').readlines()]
@@ -41,7 +41,7 @@ setup(
         'agaveflask',
     ],
     package_dir={'agaveflask': 'agaveflask'},
-    data_files=[('', ['requirements.txt'], ['README.md'])],
+    data_files=[('', ['requirements.txt', 'README.md', 'LICENSE.txt'])],
     include_package_data=True,
     install_requires=requires,
     license="BSD",
@@ -54,6 +54,7 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
     cmdclass={'test': PyTest},
