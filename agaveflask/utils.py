@@ -74,7 +74,7 @@ def get_limit_request_parameter(query_dict={}):
 
 
 def get_offset_request_parameter(query_dict={}):
-    """Return the maximum number of results to skip in the response result set. If the offset parameter is present
+    """Return the maximum number of results to skip in the response result set. If the offset parameter is presen
     in the url query parameters, it will be returned as an integer value. If unspecified, the default value of 0
     will be returned.
 
