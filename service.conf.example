@@ -1,6 +1,6 @@
 [general]
 # Service tag/version reported in the JSON responses.
-TAG: 0.1
+TAG: 0.2
 
 
 [web]
@@ -19,6 +19,12 @@ apim_pub_key_file:
 
 # url to the public key for the apim instance when deployed behind apim (jwt access control)
 apim_pub_key_url:
+
+# Maximum size of a result set that can be returned by the apis.
+max_result_count: 500
+
+# Default pagination size of the result set returned by the apis.
+default_result_count: 50
 
 # whether to show tracebacks on error
 show_traceback: True
