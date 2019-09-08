@@ -29,9 +29,13 @@ class AgaveConfigParser():
 
 def read_config(conf_file='service.conf'):
     parser = AgaveConfigParser()
-    places = ['/{}'.format(conf_file),
-              '/etc/{}'.format(conf_file),
-              '{}/{}'.format(os.getcwd(), conf_file)]
+    if os.environ.get('SERVICE_CONFIG_FILE'):
+        places = [os.environ.get('SERVICE_CONFIG_FILE')]
+    else:
+        places = ['/{}'.format(conf_file),
+                  '/etc/{}'.format(conf_file),
+                  '{}/{}'.format(os.getcwd(), conf_file)]
+
     place = places[0]
     for p in places:
         if os.path.exists(p):

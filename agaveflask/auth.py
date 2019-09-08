@@ -7,9 +7,9 @@ import jwt
 from jwt.contrib.algorithms.pycrypto import RSAAlgorithm
 from flask import g, request
 
-from .config import Config
-from .errors import PermissionsError,BaseAgaveflaskError
-from .logs import get_logger
+from agaveflask.config import Config
+from agaveflask.errors import PermissionsError,BaseAgaveflaskError
+from agaveflask.logs import get_logger
 
 logger = get_logger(__name__)
 

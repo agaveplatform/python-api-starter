@@ -3,7 +3,7 @@
 import logging
 import configparser
 
-from .config import Config
+from agaveflask.config import Config
 
 # possible log levels
 LEVELS = ('CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG',)

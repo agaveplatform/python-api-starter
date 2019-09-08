@@ -7,7 +7,7 @@ import configparser
 import redis
 from pymongo import MongoClient
 
-from .config import Config
+from agaveflask.config import Config
 
 
 def _do_get(getter, key):

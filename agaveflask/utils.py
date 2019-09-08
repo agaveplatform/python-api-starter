@@ -8,8 +8,8 @@ from werkzeug.exceptions import ClientDisconnected
 from flask_restful import Api
 from flask_restful import reqparse
 
-from .config import Config
-from .errors import BaseAgaveflaskError
+from agaveflask.config import Config
+from agaveflask.errors import BaseAgaveflaskError
 
 TAG = os.environ.get('service_TAG') or Config.get('general', 'TAG')
 
