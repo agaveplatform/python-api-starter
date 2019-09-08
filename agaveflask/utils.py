@@ -1,8 +1,7 @@
 import os
 import re
-from math import floor
 from collections import OrderedDict
-from flask import json, request, Request
+from flask import json, request, Request, make_response
 from werkzeug.datastructures import ImmutableMultiDict
 from werkzeug.exceptions import ClientDisconnected
 from flask_restful import Api
@@ -281,7 +280,9 @@ def ok(result, msg="The request was successful", request=request):
         'version': TAG,
         'result': filter_fields(result, request.args)}
 
-    return format_response(response_data, msg=msg, query_dict=request.args)
+    response = make_response(format_response(response_data, msg=msg, query_dict=request.args))
+    response.headers['Content-Type'] = "application/json"
+    return response
 
 
 def error(result=None, msg="Error processing the request.", request=request):
@@ -299,4 +300,6 @@ def error(result=None, msg="Error processing the request.", request=request):
             'version': TAG,
             'result': filter_fields(result, request.args)}
 
-    return format_response(response_data, msg=msg, query_dict=request.args)
+    response = make_response(format_response(response_data, msg=msg, query_dict=request.args))
+    response.headers['Content-Type'] = "application/json"
+    return response
