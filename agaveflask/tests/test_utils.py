@@ -1,4 +1,3 @@
-
 import os
 import re
 import base64
@@ -6,7 +5,6 @@ import pytest
 from flask import json
 from werkzeug.datastructures import ImmutableMultiDict
 
-import agaveflask.auth as a
 from agaveflask import utils
 from agaveflask.config import Config
 from agaveflask.errors import BaseAgaveflaskError

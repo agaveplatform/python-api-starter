@@ -1,6 +1,3 @@
-
-import json
-import os
 import base64
 import pytest
 import agaveflask.auth as a
