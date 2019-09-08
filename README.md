@@ -9,7 +9,7 @@ A common set of Python modules for writing Flask>=1.0 services for the Agave Pla
 ## Installation ##
 
 ```
-pip install agaveflask
+pip install .
 ```
 
 Requires Python header files and a C++ compiler on top of gcc. On Debian/Ubuntu systems:
@@ -25,19 +25,22 @@ apt-get install python3-dev g++
 * auth.py - configurable authentication/authorization routines.
 * config.py - config parsing.
 * errors.py - exception classes raised by agaveflask.
-* store.py - python bindings for persistence.
+* logs.py - common logging module
+* models.py - common serialization classes for ORM and other business objects
+* store.py - python bindings for persistence. Simple k/v abstraction functions.
 * utils.py - general request/response utilities.
 
-It relies on a configuration file for the service. Create a file called service.conf in one of `/`, `/etc`, or `$pwd`.
-See `service.conf.example` in this repository for settings used by this library.
+It relies on a configuration file for the service. Create a file called service.conf in one of `/`, `/etc`, or `$pwd`, 
+or at a location specified by `SERVICE_CONF_FILE` in the runtime environment. See `service.conf.example` in this 
+repository for settings used by this library.
 
 
 ## Using Docker ##
 
 ### Packaging ###
-If you are packaging your flask service with Docker, agaveflask provides a base image, agaveapi/flask_api, that
-simplifies your Dockerfile and provides a configurable entrypoint for both development and production deployments. In
-most cases, all you need to do is add your service code and your requirements.txt file. For example, if you have a
+If you are packaging your flask service with Docker, agaveflask provides a base image, agaveplatform/python-api-starter, 
+that simplifies your Dockerfile and provides a configurable entrypoint for both development and production deployments. 
+In most cases, all you need to do is add your service code and your requirements.txt file. For example, if you have a
 flask service with a requirements.txt file and code that resides in a directory called "service", the Dockerfile can
 be as simple as:
 
@@ -109,12 +112,12 @@ rely exclusively on the image defaults.
 
 Here is a complete list of config variables, their usage, and their default values:
 
-* server: Value 'dev' attempts to starts up a development server by executing your module's `__main__` method. Any
+* **server**: Value 'dev' attempts to starts up a development server by executing your module's `__main__` method. Any
 other value starts up gunicorn. Default is 'dev'.
-* package: path to package containing service code (no trailing slash). Default is '/service'.
-* module: name of python module (not including '.py') containing the wsgi application object. Default is 'api'.
-* app: name of the wsgi application object. Default is 'app'.
-* port: port to start the server on when running with gunicorn. Default is 5000.
+* **package**: path to package containing service code (no trailing slash). Default is /service'.
+* **module**: name of python module (not including '.py') containing the wsgi application object. Default is 'api'.
+* **app**: name of the wsgi application object. Default is 'app'.
+* **port**: port to start the server on when running with gunicorn. Default is 5000.
 
 
 ### Docker compose Example ###
